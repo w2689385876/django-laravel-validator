@@ -1,0 +1,6 @@
+*.pyc
+*.pyo
+.DS_Store
+.idea
+env
+django_laravel_validator.egg-info
