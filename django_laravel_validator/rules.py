@@ -3,6 +3,7 @@
 # FILE_NAME    : 
 # AUTHOR       : younger shen
 
-RULES = dict()
+from django.core.validators import RegexValidator
 
-RULES['email'] = r''
+
+REQUIRED = RegexValidator(regex=r'[0-9]+', message='it is required', code='required')
