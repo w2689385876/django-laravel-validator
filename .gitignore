@@ -3,6 +3,7 @@
 .DS_Store
 .idea
 coverage
+.coverage
 *.html
 env
 django_laravel_validator.egg-info

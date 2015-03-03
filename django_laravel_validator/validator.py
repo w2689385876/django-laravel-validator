@@ -4,7 +4,9 @@
 # AUTHOR       : younger shen
 from importlib import import_module
 from django.core.exceptions import ValidationError
-from django_laravel_validator.exceptions import InvalidValidateDataError
+from .exceptions import InvalidValidateDataError
+from .utils import format_args_split
+from .rules import WITH_PARAMETERS_VALIDATOR
 
 
 class BaseValidator(type):
@@ -47,16 +49,23 @@ class Validator(object):
             else:
                 rules_list = rules.split('|')
                 for rule in rules_list:
+                    rule_origin = rule
+                    rule = rule.split(':')[0]
                     rule_validator = import_module('.rules', package='django_laravel_validator')
-                    regex_validator = getattr(rule_validator, rule.upper())
+
+                    if rule.upper() in WITH_PARAMETERS_VALIDATOR:
+                        rule_args = format_args_split(rule_origin)
+                        regex = getattr(rule_validator, rule.upper())(rule_args)
+                    else:
+                        regex = getattr(rule_validator, rule.upper())
+
                     try:
-                        regex_validator('')
+                        regex(self.data.get(k, None))
                     except ValidationError as e:
                         if self.error_list.get(k, None):
                             self.error_list.get(k).update(**{rule: str(e)})
                         else:
                             self.error_list.update(**{k: {rule: str(e)}})
-
         if len(self.error_list.keys()) > 0:
             return False
         else:
@@ -64,15 +73,3 @@ class Validator(object):
 
     def errors(self):
         return self.error_list
-
-
-if __name__ == '__main__':
-    class Data(Validator):
-        name = 'required'
-        age = 'required'
-
-    a = Data('')
-    if a.fails():
-        pass
-    else:
-        print a.errors()
