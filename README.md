@@ -1,4 +1,4 @@
 #django-laravel-validator
 
-     a form validator for django inspired of validator of laravel framework
-     easy to use easy to validate every thing.
+     a input validator for django inspired by validator of laravel framework
+     easy to use easy to extend and easy to  validate every thing.
