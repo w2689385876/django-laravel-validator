@@ -6,3 +6,5 @@
 REQUIRED_MESSAGE = u'it is required'
 NUMERIC_MESSAGE = u'it should be numeric string'
 MIN_MESSAGE = u'it should be longger than {length}'
+MAX_MESSAGE = u'it should be shorter than {length}'
+RANGE_MESSAGE = u'it shoude shorter than {max}, logger than {min}'
