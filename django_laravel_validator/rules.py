@@ -21,7 +21,6 @@ class RequiredValidator(RegexValidator):
         self.message = REQUIRED_MESSAGE
 
     def __call__(self, value=None):
-        value = value.strip()
         if value is None or value == '':
             raise ValidationError(self.message, code=self.code)
 
@@ -43,7 +42,10 @@ class MinValidator(RegexValidator):
     def __init__(self, args=None, **kwargs):
         super(MinValidator, self).__init__(**kwargs)
 
-        if not args:
+        if not args or len(args) != 1 or args[0] is None or args[0] == '':
+            raise InvalidMinValidatorParameterError()
+
+        if not re.match(RE_NUMBERIC, args[0]):
             raise InvalidMinValidatorParameterError()
 
         self.length = args[0]
@@ -51,7 +53,10 @@ class MinValidator(RegexValidator):
         self.message = MIN_MESSAGE.format(length=self.length)
 
     def __call__(self, value=None):
-        value = value.strip()
+
+        if value is None or value == '':
+            raise ValidationError(self.message, code=self.code)
+
         if len(value) < int(self.length):
             raise ValidationError(self.message, code=self.code)
 

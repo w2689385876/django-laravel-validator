@@ -19,3 +19,15 @@ def check_errors(error_list):
         if len(value.keys()) > 0:
             return False
     return True
+
+
+def error_message_generate(field, rule, message, error):
+    if not message:
+        return error[0]
+    else:
+        message_key = field + '.' + rule
+        message_str = message.get(message_key, None)
+        if message_str:
+            return message_str
+        else:
+            return error[0]

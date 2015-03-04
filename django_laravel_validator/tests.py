@@ -3,30 +3,7 @@
 # FILE_NAME    : 
 # AUTHOR       : younger shen
 
-#
-# vdr = Validator(request.POST,{'username':'required|min5|unique:users'})
-#
-# from .validator import Validator
-#
-# class UserValidator(Validator):
-#     ussername = 'required|min:6|unique:users'
-#     password = 'required|min8'
-#
-#     def __init__(self, data, messages, regex_list):
-#         self.data = data
-#         a regex must contains a code name and a regex
-#         such as regex_list = [dict('love:2'=r'sdfsf'), dict()]
-#         self.regex_list = regex_list
-#         self.messages = messages
-#
-#         def fails(self):
-#         errors = self.data
-#         return errors if errors else False
-#
-#     def check(self):
-#     do custom check
-#     may return the same error as ValidationError with a message and a error code
-#     pass
+from django_laravel_validator.exceptions import InvalidMinValidatorParameterError
 from django_laravel_validator.utils import check_errors
 from django_laravel_validator.validator import Validator
 
@@ -47,12 +24,24 @@ class TestValidator1(Validator):
 
 
 class TestValidator2(Validator):
-    username = 'required|min:8'
+    username = 'required|min:8|numeric'
     password = 'required|min:8|numeric'
 
     def check(self):
         username = self.data.get('username')
         password = self.data.get('password')
+        print ' i am checking '
+
+
+class TestValidator3(Validator):
+
+    username = 'required|min:sdf|numeric|sss'
+    password = 'required|min:sss|numeric'
+
+
+class TestValidator4(Validator):
+    username = 'required|min:8|numeric'
+    password = 'required|min:2|numeric'
 
 
 def test_validator():
@@ -83,16 +72,39 @@ def test_validator2():
     assert ret is True
     assert check_errors(error_list) is True
 
-    data = dict(username='123456', password='wwwsf')
+    data = dict(username='', password='wwwsf')
     validator = TestValidator2(data)
     ret = validator.fails()
     error_list = validator.errors()
 
     assert ret is False
+    assert error_list.get('username').get('required') == 'it is required'
     assert error_list.get('username').get('min') == 'it should be longger than 8'
-    print error_list
+    assert error_list.get('username').get('numeric') == 'it should be numeric string'
     assert error_list.get('password').get('min') == 'it should be longger than 8'
     assert error_list.get('password').get('numeric') == 'it should be numeric string'
 
 
+def test_validator3():
+    data = dict(username='tinker', password='i am tinker')
+    validator = TestValidator3(data)
+    try:
+        ret = validator.fails()
+    except InvalidMinValidatorParameterError as e:
+        pass
 
+
+def test_validator4():
+    data = dict(username='', password='')
+    message = {'username.required': 'haha', 'password.required': 'heihei', 'username.min': 'min'}
+
+    validator = TestValidator4(data, message=message)
+
+    ret = validator.fails()
+    error_list = validator.errors()
+
+    assert ret is False
+    assert error_list.get('username').get('required') == 'haha'
+    assert error_list.get('password').get('required') == 'heihei'
+    assert error_list.get('username').get('min') == 'min'
+    assert error_list.get('username').get('numeric') == 'it should be numeric string'

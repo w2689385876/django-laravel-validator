@@ -4,8 +4,8 @@
 # AUTHOR       : younger shen
 from importlib import import_module
 from django.core.exceptions import ValidationError
-from .exceptions import InvalidValidateDataError, InvalidDataError, InvalidRuleNameError
-from .utils import format_args_split, check_errors
+from .exceptions import InvalidValidateDataError, InvalidRuleNameError
+from .utils import format_args_split, check_errors, error_message_generate
 from .rules import WITH_PARAMETERS_VALIDATOR
 
 
@@ -57,7 +57,6 @@ class Validator(object):
                 for rule in rules_list:
                     rule_origin = rule
                     rule = rule.split(':')[0]
-
                     if rule is None or rule == '':
                         raise InvalidRuleNameError()
 
@@ -72,15 +71,18 @@ class Validator(object):
                         rule_args = format_args_split(rule_origin)
                         regex = regex(rule_args)
                     try:
-                        data = self.data.get(k, None)
-                        if not data:
-                            raise InvalidDataError()
                         regex(self.data.get(k, None))
 
                     except ValidationError as e:
-                            self.error_list.update(**{k: {rule: e[0]}})
+                        error_message = error_message_generate(k, rule, self.message, e)
+                        error_dict = self.error_list.get(k)
+                        error_dict.update({rule: error_message})
+                        self.error_list.get(k).update(error_dict)
 
-        self.check()
+        check = getattr(self, 'check', None)
+        if check and callable(check):
+            check()
+
         return check_errors(self.error_list)
 
     def errors(self):
