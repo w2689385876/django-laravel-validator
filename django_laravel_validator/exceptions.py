@@ -37,6 +37,12 @@ class InvalidRangeValidatorParameterError(BaseValidatorException):
         self.message = message if message else 'invalid RANGE validator parameter error'
 
 
+class InvalidLengthValidatorParameterError(BaseValidatorException):
+
+    def __init__(self, message=None):
+        self.mesage = message if message else 'invalid LENGTH validator parameter error'
+
+
 class InvalidDataError(BaseValidatorException):
 
     def __init__(self, message=None):

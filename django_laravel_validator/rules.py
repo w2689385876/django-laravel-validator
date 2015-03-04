@@ -9,11 +9,13 @@ from .regex import RE_NUMBERIC
 from .exceptions import InvalidMinValidatorParameterError
 from .exceptions import InvalidMaxValidatorParameterError
 from .exceptions import InvalidRangeValidatorParameterError
+from .exceptions import InvalidLengthValidatorParameterError
 from .messages import REQUIRED_MESSAGE
 from .messages import NUMERIC_MESSAGE
 from .messages import MIN_MESSAGE
 from .messages import MAX_MESSAGE
 from .messages import RANGE_MESSAGE
+from .messages import LENGTH_MESSAGE
 WITH_PARAMETERS_VALIDATOR = ['MIN', 'MAX', 'RANGE']
 
 
@@ -52,16 +54,16 @@ class MinValidator(RegexValidator):
         if not re.match(RE_NUMBERIC, args[0]):
             raise InvalidMinValidatorParameterError()
 
-        self.length = int(args[0])
+        self.min = int(args[0])
         self.code = 'min'
-        self.message = MIN_MESSAGE.format(length=self.length)
+        self.message = MIN_MESSAGE.format(min=self.length)
 
     def __call__(self, value=None):
 
         if value is None or value == '':
             raise ValidationError(message=self.message, code=self.code)
 
-        if len(value) < self.length:
+        if len(value) < self.min:
             raise ValidationError(message=self.message, code=self.code)
 
 
@@ -76,15 +78,38 @@ class MaxValidator(RegexValidator):
         if not re.match(RE_NUMBERIC, args[0]):
             raise InvalidMaxValidatorParameterError()
 
-        self.length = int(args[0])
+        self.max = int(args[0])
         self.code = 'max'
-        self.message = MAX_MESSAGE.format(length=self.length)
+        self.message = MAX_MESSAGE.format(max=self.length)
 
     def __call__(self, value=None):
         if value is None or value == '':
             raise ValidationError(message=self.message, code=self.code)
 
-        if len(value) > self.length:
+        if len(value) > self.max:
+            raise ValidationError(message=self.message, code=self.code)
+
+
+class LengthValidator(RegexValidator):
+
+    def __init__(self, args=None, **kwargs):
+        super(LengthValidator, self).__init__(**kwargs)
+
+        if not args or len(args) != 1:
+            raise InvalidLengthValidatorParameterError()
+
+        if not re.match(RE_NUMBERIC, args[0]):
+            raise InvalidLengthValidatorParameterError()
+
+        self.length = int(args[0])
+        self.code = 'length'
+        self.message = LENGTH_MESSAGE.format(length=self.length)
+
+    def __call__(self, value=None):
+        if value is None or value == '':
+            raise ValidationError(message=self.message, code=self.code)
+
+        if not len(value) == self.length:
             raise ValidationError(message=self.message, code=self.code)
 
 
@@ -130,6 +155,10 @@ def max_validator_wrapper():
     return MaxValidator
 
 
+def length_validator_wrapper():
+    return LengthValidator
+
+
 def range_validator_wrapper():
     return RangeValidator
 
@@ -138,3 +167,4 @@ NUMERIC = NumericValidator()
 MIN = min_validator_wrapper()
 MAX = max_validator_wrapper()
 REANGE = range_validator_wrapper()
+LENGTH = length_validator_wrapper()
