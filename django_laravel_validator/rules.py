@@ -10,12 +10,15 @@ from .exceptions import InvalidMinValidatorParameterError
 from .exceptions import InvalidMaxValidatorParameterError
 from .exceptions import InvalidRangeValidatorParameterError
 from .exceptions import InvalidLengthValidatorParameterError
+from .exceptions import InvalidAcceptedValidatorParameterError
 from .messages import REQUIRED_MESSAGE
 from .messages import NUMERIC_MESSAGE
 from .messages import MIN_MESSAGE
 from .messages import MAX_MESSAGE
 from .messages import RANGE_MESSAGE
 from .messages import LENGTH_MESSAGE
+from .messages import ACCEPTED_MESSAGE
+
 WITH_PARAMETERS_VALIDATOR = ['MIN', 'MAX', 'RANGE']
 
 
@@ -147,6 +150,25 @@ class RangeValidator(RegexValidator):
             raise ValidationError(message=self.message, code=self.code)
 
 
+class AcceptedValidation(RegexValidator):
+
+    def __init__(self, args, **kwargs):
+        super(AcceptedValidation, self).__init__(**kwargs)
+
+        if not args or len(args) != 1:
+            raise InvalidAcceptedValidatorParameterError()
+
+        self.accepted = args[0]
+        self.code = 'accepted'
+        self.message = ACCEPTED_MESSAGE
+
+    def __call__(self, value=None):
+        if value == 'yes' or value == 'on' or value == '1':
+            pass
+        else:
+            raise ValidationError(message=self.message, code=self.code)
+
+
 def min_validator_wrapper():
     return MinValidator
 
@@ -162,9 +184,14 @@ def length_validator_wrapper():
 def range_validator_wrapper():
     return RangeValidator
 
+
+def accepted_validator_wrapper():
+    return AcceptedValidation
+
 REQUIRED = RequiredValidator()
 NUMERIC = NumericValidator()
 MIN = min_validator_wrapper()
 MAX = max_validator_wrapper()
 REANGE = range_validator_wrapper()
 LENGTH = length_validator_wrapper()
+ACCEPTED = accepted_validator_wrapper()

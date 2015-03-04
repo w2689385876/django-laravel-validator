@@ -43,6 +43,12 @@ class InvalidLengthValidatorParameterError(BaseValidatorException):
         self.mesage = message if message else 'invalid LENGTH validator parameter error'
 
 
+class InvalidAcceptedValidatorParameterError(BaseValidatorException):
+
+    def __init__(self, message=None):
+        self.message = message if message else 'invalid ACCEPTED validator parameter error'
+
+
 class InvalidDataError(BaseValidatorException):
 
     def __init__(self, message=None):
