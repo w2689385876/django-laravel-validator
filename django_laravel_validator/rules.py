@@ -6,11 +6,14 @@ import re
 from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator
 from .regex import RE_NUMBERIC
-from .exceptions import InvalidMinValidatorParameterError, InvalidMaxValidatorParameterError, \
-    InvalidRangeValidatorParameterError
-from .messages import REQUIRED_MESSAGE, MAX_MESSAGE, RANGE_MESSAGE
+from .exceptions import InvalidMinValidatorParameterError
+from .exceptions import InvalidMaxValidatorParameterError
+from .exceptions import InvalidRangeValidatorParameterError
+from .messages import REQUIRED_MESSAGE
 from .messages import NUMERIC_MESSAGE
 from .messages import MIN_MESSAGE
+from .messages import MAX_MESSAGE
+from .messages import RANGE_MESSAGE
 WITH_PARAMETERS_VALIDATOR = ['MIN', 'MAX', 'RANGE']
 
 
