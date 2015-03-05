@@ -49,6 +49,23 @@ class InvalidAcceptedValidatorParameterError(BaseValidatorException):
         self.message = message if message else 'invalid ACCEPTED validator parameter error'
 
 
+class InvalidActiveURLValidatorParameterError(BaseValidatorException):
+
+    def __init__(self, message=None):
+        self.message = message if message else 'invalid active_url validator parameter error'
+
+
+class InvalidAlphaValidatorParameterError(BaseValidatorException):
+
+    def __init__(self, message=None):
+        self.message = message if message else 'invalid alpha validator parameter error'
+
+class InvalidRegexValidatorParameterError(BaseValidatorException):
+
+    def __init__(self, message=None):
+        self.message = message if message else 'invalid regex validator parameter error'
+
+
 class InvalidDataError(BaseValidatorException):
 
     def __init__(self, message=None):

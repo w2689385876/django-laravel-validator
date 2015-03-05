@@ -6,11 +6,15 @@ import re
 from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator
 from .regex import RE_NUMBERIC
+from .regex import RE_ALPHA
+from .regex import RE_EMAIL
+from .regex import RE_IP_ADDRESS
 from .exceptions import InvalidMinValidatorParameterError
 from .exceptions import InvalidMaxValidatorParameterError
 from .exceptions import InvalidRangeValidatorParameterError
 from .exceptions import InvalidLengthValidatorParameterError
 from .exceptions import InvalidAcceptedValidatorParameterError
+from .exceptions import InvalidRegexValidatorParameterError
 from .messages import REQUIRED_MESSAGE
 from .messages import NUMERIC_MESSAGE
 from .messages import MIN_MESSAGE
@@ -18,8 +22,14 @@ from .messages import MAX_MESSAGE
 from .messages import RANGE_MESSAGE
 from .messages import LENGTH_MESSAGE
 from .messages import ACCEPTED_MESSAGE
+from .messages import ALPHA_MESSAGE
+from .messages import EMAIL_MESSAGE
+from .messages import IP_ADDRESS_MESSAGE
+from .messages import BOOLEAN_MESSAGE
+from .messages import REGEX_MESSAGE
 
-WITH_PARAMETERS_VALIDATOR = ['MIN', 'MAX', 'RANGE']
+
+WITH_PARAMETERS_VALIDATOR = ['MIN', 'MAX', 'RANGE', 'LENGTH', 'ACCEPTED', 'ACTIVE_URL', 'REGEX']
 
 
 class RequiredValidator(RegexValidator):
@@ -59,7 +69,7 @@ class MinValidator(RegexValidator):
 
         self.min = int(args[0])
         self.code = 'min'
-        self.message = MIN_MESSAGE.format(min=self.length)
+        self.message = MIN_MESSAGE.format(min=self.min)
 
     def __call__(self, value=None):
 
@@ -83,7 +93,7 @@ class MaxValidator(RegexValidator):
 
         self.max = int(args[0])
         self.code = 'max'
-        self.message = MAX_MESSAGE.format(max=self.length)
+        self.message = MAX_MESSAGE.format(max=self.max)
 
     def __call__(self, value=None):
         if value is None or value == '':
@@ -150,10 +160,10 @@ class RangeValidator(RegexValidator):
             raise ValidationError(message=self.message, code=self.code)
 
 
-class AcceptedValidation(RegexValidator):
+class AcceptedValidator(RegexValidator):
 
     def __init__(self, args, **kwargs):
-        super(AcceptedValidation, self).__init__(**kwargs)
+        super(AcceptedValidator, self).__init__(**kwargs)
 
         if not args or len(args) != 1:
             raise InvalidAcceptedValidatorParameterError()
@@ -166,6 +176,76 @@ class AcceptedValidation(RegexValidator):
         if value == 'yes' or value == 'on' or value == '1':
             pass
         else:
+            raise ValidationError(message=self.message, code=self.code)
+
+
+class AlphaValidator(RegexValidator):
+
+    def __init__(self, **kwargs):
+        super(AlphaValidator, self).__init__(**kwargs)
+
+        self.alphabetic = self.args[0]
+        self.code = 'alpha'
+        self.message = ALPHA_MESSAGE
+
+    def __call__(self, value=None):
+
+        if not re.match(RE_ALPHA, value):
+            raise ValidationError(message=self.message, code=self.code)
+
+
+class EmailValidator(RegexValidator):
+
+    def __init__(self, **kwargs):
+        super(EmailValidator, self).__init__(**kwargs)
+        self.code = 'email'
+        self.message = EMAIL_MESSAGE
+
+    def __call__(self, value=None):
+        if not re.match(RE_EMAIL, value):
+            raise ValidationError(message=self.message, code=self.code)
+
+
+class IPAddressValidator(RegexValidator):
+
+    def __init__(self, **kwargs):
+        super(IPAddressValidator, self).__init__(**kwargs)
+        self.code = 'ip'
+        self.message = IP_ADDRESS_MESSAGE
+
+    def __call__(self, value=None):
+        if not re.match(RE_IP_ADDRESS):
+            raise ValidationError(message=self.message, code=self.code)
+
+
+class BooleanValidator(RegexValidator):
+
+    def __init__(self, **kwargs):
+        super(BooleanValidator, self).__init__(**kwargs)
+        self.code = 'boolean'
+        self.message = BOOLEAN_MESSAGE
+
+    def __call__(self, value=None):
+        if value == 1 or value == 0 or value == '1' or value == '0' or value == 'True' or value is True or value == 'False' or value is False:
+            pass
+        else:
+            raise ValidationError(message=self.message, code=self.code)
+
+
+class RegexValidator(RegexValidator):
+
+    def __init__(self, args, **kwargs):
+        super(RegexValidator, self).__init__(**kwargs)
+        self.code = 'regex'
+        self.message = REGEX_MESSAGE
+
+        if not args or len(args) != 1:
+            raise InvalidRegexValidatorParameterError()
+
+        self.regex = args[0]
+
+    def __call__(self, value=None):
+        if not re.match(self.regex, value):
             raise ValidationError(message=self.message, code=self.code)
 
 
@@ -186,7 +266,12 @@ def range_validator_wrapper():
 
 
 def accepted_validator_wrapper():
-    return AcceptedValidation
+    return AcceptedValidator
+
+
+def regex_validator_wrapper():
+    return RegexValidator
+
 
 REQUIRED = RequiredValidator()
 NUMERIC = NumericValidator()
@@ -195,3 +280,6 @@ MAX = max_validator_wrapper()
 REANGE = range_validator_wrapper()
 LENGTH = length_validator_wrapper()
 ACCEPTED = accepted_validator_wrapper()
+ALPHA = AlphaValidator()
+EMAIL = EmailValidator()
+REGEX = regex_validator_wrapper()

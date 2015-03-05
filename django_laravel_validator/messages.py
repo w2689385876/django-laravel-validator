@@ -3,10 +3,15 @@
 # FILE_NAME    : 
 # AUTHOR       : younger shen
 
-REQUIRED_MESSAGE = u'it is required'
-NUMERIC_MESSAGE = u'it should be numeric string'
-MIN_MESSAGE = u'it should be longger than {min}'
-MAX_MESSAGE = u'it should be shorter than {max}'
-LENGTH_MESSAGE = u'it should be match the length of {length}'
-RANGE_MESSAGE = u'it shoude shorter than {max}, logger than {min}'
-ACCEPTED_MESSAGE = u'value must be yes | on | 1'
+REQUIRED_MESSAGE = u'The field under validation must be present in the input data.'
+NUMERIC_MESSAGE = u'The field under validation must have a numeric value.'
+MIN_MESSAGE = u'The field under validation must have a minimum value : {min}.'
+MAX_MESSAGE = u'The field under validation must be less than or equal to a maximum value : {max}'
+LENGTH_MESSAGE = u'The field under validation must have a size of {length}'
+RANGE_MESSAGE = u'The field under validation must have a size between the given min and max of {min} to {max}'
+ACCEPTED_MESSAGE = u'The field under validation must be yes, on, or 1.'
+ALPHA_MESSAGE = u'The field under validation must be entirely alphabetic characters'
+EMAIL_MESSAGE = u'The field under validation must be formatted as an e-mail address.'
+IP_ADDRESS_MESSAGE = u'The field under validation must be formatted as an IP address.'
+BOOLEAN_MESSAGE = u'The field under validation must be able to be cast as a boolean. Accepted input are true, false, 1, 0, "1" and "0".'
+REGEX_MESSAGE = u'The field under validation must match the given regular expression : {regex}.'
