@@ -143,15 +143,11 @@ def test_validator5():
 
 
 def test_validator6():
-    data = dict(username='abcef', password='abc', remember_me='1', email='younger.x.shen@gmail.com', ip='192.168.1.1', is_superuser='1', phone='1234ss56')
+    data = dict(username='abcef', password='abc', remember_me='1', email='younger.x.shen@gmail.com', ip='192.168.1.1', is_superuser='1', phone='123456')
     validator = TestValidator6(data)
     ret = validator.fails()
     error_list = validator.errors()
 
-    print error_list
-    assert ret is True
-    assert False
-    print error_list
     assert not error_list.get('username')
     assert not error_list.get('password')
     assert not error_list.get('remember_me')

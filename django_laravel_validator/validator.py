@@ -70,6 +70,9 @@ class Validator(object):
                     if rule.upper() in WITH_PARAMETERS_VALIDATOR:
                         rule_args = format_args_split(rule_origin)
                         regex = regex(rule_args)
+                    else:
+                        regex = regex()
+
                     try:
                         regex(self.data.get(k, None))
 
@@ -82,7 +85,6 @@ class Validator(object):
         check = getattr(self, 'check', None)
         if check and callable(check):
             check()
-
         return check_errors(self.error_list)
 
     def errors(self):

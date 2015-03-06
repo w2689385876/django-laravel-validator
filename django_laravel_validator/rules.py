@@ -28,7 +28,7 @@ from .messages import BOOLEAN_MESSAGE
 from .messages import REGEX_MESSAGE
 
 
-WITH_PARAMETERS_VALIDATOR = ['MIN', 'MAX', 'RANGE', 'LENGTH', 'ACTIVE_URL', 'REGEX']
+WITH_PARAMETERS_VALIDATOR = ['MIN', 'MAX', 'RANGE', 'LENGTH', 'REGEX']
 
 
 class RequiredValidator(RegexValidator):
@@ -267,15 +267,15 @@ def regex_validator_wrapper():
     return RegexValidator
 
 
-REQUIRED = RequiredValidator()
-NUMERIC = NumericValidator()
-MIN = min_validator_wrapper()
-MAX = max_validator_wrapper()
-RANGE = range_validator_wrapper()
-LENGTH = length_validator_wrapper()
-ACCEPTED = AcceptedValidator()
-ALPHA = AlphaValidator()
-EMAIL = EmailValidator()
-IP = IPAddressValidator()
-BOOL = BooleanValidator()
-REGEX = regex_validator_wrapper()
+REQUIRED = RequiredValidator
+NUMERIC = NumericValidator
+MIN = MinValidator
+MAX = MaxValidator
+RANGE = RangeValidator
+LENGTH = LengthValidator
+ACCEPTED = AcceptedValidator
+ALPHA = AlphaValidator
+EMAIL = EmailValidator
+IP = IPAddressValidator
+BOOL = BooleanValidator
+REGEX = RegexValidator
