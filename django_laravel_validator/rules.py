@@ -13,7 +13,6 @@ from .exceptions import InvalidMinValidatorParameterError
 from .exceptions import InvalidMaxValidatorParameterError
 from .exceptions import InvalidRangeValidatorParameterError
 from .exceptions import InvalidLengthValidatorParameterError
-from .exceptions import InvalidAcceptedValidatorParameterError
 from .exceptions import InvalidRegexValidatorParameterError
 from .messages import REQUIRED_MESSAGE
 from .messages import NUMERIC_MESSAGE
@@ -29,7 +28,7 @@ from .messages import BOOLEAN_MESSAGE
 from .messages import REGEX_MESSAGE
 
 
-WITH_PARAMETERS_VALIDATOR = ['MIN', 'MAX', 'RANGE', 'LENGTH', 'ACCEPTED', 'ACTIVE_URL', 'REGEX']
+WITH_PARAMETERS_VALIDATOR = ['MIN', 'MAX', 'RANGE', 'LENGTH', 'ACTIVE_URL', 'REGEX']
 
 
 class RequiredValidator(RegexValidator):
@@ -209,7 +208,7 @@ class IPAddressValidator(RegexValidator):
         self.message = IP_ADDRESS_MESSAGE
 
     def __call__(self, value=None):
-        if not re.match(RE_IP_ADDRESS):
+        if not re.match(RE_IP_ADDRESS, value):
             raise ValidationError(message=self.message, code=self.code)
 
 
@@ -260,10 +259,6 @@ def range_validator_wrapper():
     return RangeValidator
 
 
-def accepted_validator_wrapper():
-    return AcceptedValidator
-
-
 def regex_validator_wrapper():
     return RegexValidator
 
@@ -274,7 +269,7 @@ MIN = min_validator_wrapper()
 MAX = max_validator_wrapper()
 RANGE = range_validator_wrapper()
 LENGTH = length_validator_wrapper()
-ACCEPTED = accepted_validator_wrapper()
+ACCEPTED = AcceptedValidator()
 ALPHA = AlphaValidator()
 EMAIL = EmailValidator()
 IP = IPAddressValidator()

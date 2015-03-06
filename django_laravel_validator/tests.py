@@ -51,7 +51,7 @@ class TestValidator5(Validator):
 
 class TestValidator6(Validator):
     username = 'required|length:5|alpha'
-    pasword = 'required|range:2,5|'
+    pasword = 'required|range:2,5'
     remember_me = 'accepted'
     email = 'required|email'
     ip = 'ip'
