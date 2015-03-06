@@ -16,10 +16,10 @@ def check_errors(error_list, error_list_ext):
 
     for key in error_list:
         value = error_list.get(key)
-        if not value:
+        if len(value.keys()) > 0:
             return False
 
-    if not error_list_ext:
+    if len(error_list_ext.keys()) > 0:
         return False
 
     return True
