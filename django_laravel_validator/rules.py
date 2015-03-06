@@ -196,6 +196,7 @@ class EmailValidator(RegexValidator):
         self.message = EMAIL_MESSAGE
 
     def __call__(self, value=None):
+        print value
         if not re.match(RE_EMAIL, value):
             raise ValidationError(message=self.message, code=self.code)
 
@@ -245,26 +246,6 @@ class RegexValidator(RegexValidator):
     def __call__(self, value=None):
         if not re.match(self.regex, value):
             raise ValidationError(message=self.message, code=self.code)
-
-
-def min_validator_wrapper():
-    return MinValidator
-
-
-def max_validator_wrapper():
-    return MaxValidator
-
-
-def length_validator_wrapper():
-    return LengthValidator
-
-
-def range_validator_wrapper():
-    return RangeValidator
-
-
-def regex_validator_wrapper():
-    return RegexValidator
 
 
 REQUIRED = RequiredValidator

@@ -17,7 +17,7 @@ class BaseValidator(type):
     def __init__(cls, name, bases, dct):
         new_attrs = dict()
         error_list = dict()
-
+        error_list_ext = dict()
         if name is not 'Validator':
             for k in dct:
                 if k != '__module__' and k != '__main__':
@@ -28,6 +28,7 @@ class BaseValidator(type):
 
             setattr(cls, 'validate_data', new_attrs)
             setattr(cls, 'error_list', error_list)
+            setattr(cls, 'error_list_ext', error_list_ext)
 
         super(BaseValidator, cls).__init__(name, bases, dct)
 
@@ -37,14 +38,16 @@ class BaseValidator(type):
 
 class Validator(object):
     """
-        base class for all Validator
+        base class for all Validator rules
     """
     __metaclass__ = BaseValidator
 
-    def __init__(self, data, message=None, regex_list=None):
+    def __init__(self, data, message=None):
         self.data = data
         self.message = message
-        self.regex_list = regex_list
+
+    def add_error(self, error):
+        self.error_list_ext.update(error)
 
     def fails(self):
         validate_data = getattr(self, 'validate_data')
@@ -72,10 +75,8 @@ class Validator(object):
                         regex = regex(rule_args)
                     else:
                         regex = regex()
-
                     try:
                         regex(self.data.get(k, None))
-
                     except ValidationError as e:
                         error_message = error_message_generate(k, rule, self.message, e)
                         error_dict = self.error_list.get(k)
@@ -85,7 +86,8 @@ class Validator(object):
         check = getattr(self, 'check', None)
         if check and callable(check):
             check()
-        return check_errors(self.error_list)
+        return check_errors(self.error_list, self.error_list_ext)
 
     def errors(self):
+        self.error_list.update(extra=self.error_list_ext)
         return self.error_list

@@ -12,12 +12,16 @@ def format_args_split(format_str):
         return None
 
 
-def check_errors(error_list):
+def check_errors(error_list, error_list_ext):
 
     for key in error_list:
         value = error_list.get(key)
-        if len(value.keys()) > 0:
+        if not value:
             return False
+
+    if not error_list_ext:
+        return False
+
     return True
 
 

@@ -60,6 +60,7 @@ class InvalidAlphaValidatorParameterError(BaseValidatorException):
     def __init__(self, message=None):
         self.message = message if message else 'invalid alpha validator parameter error'
 
+
 class InvalidRegexValidatorParameterError(BaseValidatorException):
 
     def __init__(self, message=None):
