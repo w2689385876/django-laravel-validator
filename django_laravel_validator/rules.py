@@ -196,7 +196,6 @@ class EmailValidator(RegexValidator):
         self.message = EMAIL_MESSAGE
 
     def __call__(self, value=None):
-        print value
         if not re.match(RE_EMAIL, value):
             raise ValidationError(message=self.message, code=self.code)
 

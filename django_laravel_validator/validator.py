@@ -2,6 +2,7 @@
 # PROJECT_NAME : laravel_validator
 # FILE_NAME    : 
 # AUTHOR       : younger shen
+import copy
 from importlib import import_module
 from django.core.exceptions import ValidationError
 from .exceptions import InvalidValidateDataError, InvalidRuleNameError
@@ -45,6 +46,9 @@ class Validator(object):
     def __init__(self, data, message=None):
         self.data = data
         self.message = message
+        self.validate_flag = True
+        self.error_list = copy.deepcopy(self.error_list)
+        self.error_list_ext = copy.deepcopy(self.error_list_ext)
 
     def add_error(self, error):
         self.error_list_ext.update(error)
@@ -82,10 +86,12 @@ class Validator(object):
                         error_dict = self.error_list.get(k)
                         error_dict.update({rule: error_message})
                         self.error_list.get(k).update(error_dict)
+                        self.validate_flag = False
 
         check = getattr(self, 'check', None)
-        if check and callable(check):
+        if check and callable(check) and self.validate_flag:
             check()
+
         return check_errors(self.error_list, self.error_list_ext)
 
     def errors(self):
