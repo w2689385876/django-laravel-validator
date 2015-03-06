@@ -51,11 +51,12 @@ class TestValidator5(Validator):
 
 class TestValidator6(Validator):
     username = 'required|length:5|alpha'
-    pasword = 'required|range:2,5'
+    password = 'required|range:2,5'
     remember_me = 'accepted'
     email = 'required|email'
     ip = 'ip'
     is_superuser = 'bool'
+    phone = 'required|regex:^[0-9]{5,10}$'
 
 
 def test_validator():
@@ -124,9 +125,6 @@ def test_validator4():
 
 
 def test_validator5():
-    # username = 'required|min:8|max:16|alpha'
-    # password = 'required|range:2,5|alpha'
-
     data = dict(username='', password='')
     validator = TestValidator5(data)
     ret = validator.fails()
@@ -134,27 +132,29 @@ def test_validator5():
 
     assert ret is False
 
-    error_list.get('username').get('required') == REQUIRED_MESSAGE
-    error_list.get('username').get('min') == MIN_MESSAGE.format(min=8)
-    error_list.get('username').get('max') == MAX_MESSAGE.format(max=16)
-    error_list.get('username').get('alpha') == ALPHA_MESSAGE
+    assert error_list.get('username').get('required') == REQUIRED_MESSAGE
+    assert error_list.get('username').get('min') == MIN_MESSAGE.format(min=8)
+    assert error_list.get('username').get('max') == MAX_MESSAGE.format(max=16)
+    assert error_list.get('username').get('alpha') == ALPHA_MESSAGE
 
-    error_list.get('password').get('required') == REQUIRED_MESSAGE
-    error_list.get('password').get('range') == RANGE_MESSAGE.format(min=2, max=5)
-    error_list.get('password').get('alpha') == ALPHA_MESSAGE
+    assert error_list.get('password').get('required') == REQUIRED_MESSAGE
+    assert error_list.get('password').get('range') == RANGE_MESSAGE.format(min=2, max=5)
+    assert error_list.get('password').get('alpha') == ALPHA_MESSAGE
 
 
 def test_validator6():
-    # username = 'required|length:5|alpha'
-    # pasword = 'required|range:2,5|'
-    # remember_me = 'accepted'
-    # email = 'required|email'
-    # ip = 'ip'
-    # is_superuser = 'bool'
-
-    data = dict(username='', password='', remember_me='', email='', ip='', is_superuser='')
+    data = dict(username='abcef', password='abc', remember_me='1', email='younger.x.shen@gmail.com', ip='192.168.1.1', is_superuser='1', phone='1234ss56')
     validator = TestValidator6(data)
     ret = validator.fails()
     error_list = validator.errors()
 
-
+    print error_list
+    assert ret is True
+    assert False
+    print error_list
+    assert not error_list.get('username')
+    assert not error_list.get('password')
+    assert not error_list.get('remember_me')
+    assert not error_list.get('email')
+    assert not error_list.get('ip')
+    assert not error_list.get('is_superuser')

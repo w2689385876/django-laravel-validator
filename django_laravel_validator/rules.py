@@ -155,7 +155,7 @@ class RangeValidator(RegexValidator):
             if not value_length == self.max:
                 raise ValidationError(message=self.message, code=self.code)
 
-        if not self.min > value_length or not self.max < value_length:
+        if self.min > value_length or self.max < value_length:
             raise ValidationError(message=self.message, code=self.code)
 
 
@@ -231,12 +231,17 @@ class RegexValidator(RegexValidator):
     def __init__(self, args, **kwargs):
         super(RegexValidator, self).__init__(**kwargs)
         self.code = 'regex'
-        self.message = REGEX_MESSAGE
 
-        if not args or len(args) != 1:
+        if not args:
             raise InvalidRegexValidatorParameterError()
+        print args
+        regex = ''
+        for s in args:
+            regex += str(s)
+            regex += ','
 
-        self.regex = args[0]
+        self.regex = regex[:-1]
+        self.message = REGEX_MESSAGE.format(regex=self.regex)
 
     def __call__(self, value=None):
         if not re.match(self.regex, value):
