@@ -25,6 +25,8 @@ if you checkout from github or download the tarball
 
 Usage:
 
+you do not need to install the app to django's setting file.
+
     class RegistValidator(Validator):
         email = 'required|email'
     	password = 'required|min:8'
