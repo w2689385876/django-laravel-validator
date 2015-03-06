@@ -58,14 +58,14 @@ class Validator(object):
                     rule_origin = rule
                     rule = rule.split(':')[0]
                     if rule is None or rule == '':
-                        raise InvalidRuleNameError()
+                        raise InvalidRuleNameError(rule=rule)
 
                     rule_validator = import_module('.rules', package='django_laravel_validator')
 
                     try:
                         regex = getattr(rule_validator, rule.upper())
                     except AttributeError:
-                        raise InvalidRuleNameError()
+                        raise InvalidRuleNameError(rule=rule)
 
                     if rule.upper() in WITH_PARAMETERS_VALIDATOR:
                         rule_args = format_args_split(rule_origin)

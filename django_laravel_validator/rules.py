@@ -162,13 +162,9 @@ class RangeValidator(RegexValidator):
 
 class AcceptedValidator(RegexValidator):
 
-    def __init__(self, args, **kwargs):
+    def __init__(self, **kwargs):
         super(AcceptedValidator, self).__init__(**kwargs)
 
-        if not args or len(args) != 1:
-            raise InvalidAcceptedValidatorParameterError()
-
-        self.accepted = args[0]
         self.code = 'accepted'
         self.message = ACCEPTED_MESSAGE
 
@@ -184,7 +180,6 @@ class AlphaValidator(RegexValidator):
     def __init__(self, **kwargs):
         super(AlphaValidator, self).__init__(**kwargs)
 
-        self.alphabetic = self.args[0]
         self.code = 'alpha'
         self.message = ALPHA_MESSAGE
 
@@ -277,7 +272,7 @@ REQUIRED = RequiredValidator()
 NUMERIC = NumericValidator()
 MIN = min_validator_wrapper()
 MAX = max_validator_wrapper()
-REANGE = range_validator_wrapper()
+RANGE = range_validator_wrapper()
 LENGTH = length_validator_wrapper()
 ACCEPTED = accepted_validator_wrapper()
 ALPHA = AlphaValidator()

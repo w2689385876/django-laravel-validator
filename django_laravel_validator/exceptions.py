@@ -74,5 +74,7 @@ class InvalidDataError(BaseValidatorException):
 
 class InvalidRuleNameError(BaseValidatorException):
 
-    def __init__(self, message=None):
+    def __init__(self, message=None, rule=None):
         self.message = message if message else 'invalid rule name error'
+        if rule:
+            self.message = self.message + ': ' + rule
