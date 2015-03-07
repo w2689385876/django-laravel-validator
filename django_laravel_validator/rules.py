@@ -42,6 +42,9 @@ class RequiredValidator(RegexValidator):
         if value is None or value == '':
             raise ValidationError(message=self.message, code=self.code)
 
+        if value and value.strip() == '':
+            raise ValidationError(message=self.message, code=self.code)
+
 
 class NumericValidator(RegexValidator):
 

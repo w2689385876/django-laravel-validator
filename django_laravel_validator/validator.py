@@ -23,7 +23,7 @@ class BaseValidator(type):
             for k in dct:
                 if k != '__module__' and k != '__main__':
                     pattern = dct.get(k, None)
-                    if not callable(pattern):
+                    if pattern and not callable(pattern):
                         new_attrs.update(**{k: pattern})
                         error_list.update(**{k: {}})
 

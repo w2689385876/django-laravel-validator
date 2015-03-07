@@ -19,7 +19,7 @@ def check_errors(error_list, error_list_ext):
         if len(value.keys()) > 0:
             return False
 
-    if len(error_list_ext.keys()) > 0:
+    if error_list_ext and len(error_list_ext.keys()) > 0:
         return False
 
     return True

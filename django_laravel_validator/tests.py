@@ -66,7 +66,7 @@ def test_validator():
     error_list = validator.errors()
 
     assert ret is True
-    assert check_errors(error_list)
+    assert check_errors(error_list, None)
 
     data = dict(username='123', password='123')
 
@@ -75,7 +75,7 @@ def test_validator():
     error_list = validator.errors()
 
     assert ret is False
-    assert check_errors(error_list) is False
+    assert check_errors(error_list, None) is False
 
 
 def test_validator2():
@@ -85,7 +85,7 @@ def test_validator2():
     error_list = validator.errors()
 
     assert ret is True
-    assert check_errors(error_list) is True
+    assert check_errors(error_list, None) is True
 
     data = dict(username='', password='wwwsf')
     validator = TestValidator2(data)
