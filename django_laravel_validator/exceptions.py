@@ -79,3 +79,9 @@ class InvalidRuleNameError(BaseValidatorException):
         self.message = message if message else 'invalid rule name error'
         if rule:
             self.message = self.message + ': ' + rule
+
+
+class InvalidMatchValidatorParameterError(BaseValidatorException):
+
+    def __init__(self, message=None):
+        self.message = message if message else 'invalid match validator parameter error'

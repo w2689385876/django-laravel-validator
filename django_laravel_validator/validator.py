@@ -80,6 +80,7 @@ class Validator(object):
                     else:
                         regex = regex()
                     try:
+                        setattr(regex, 'validator_instance', self)
                         regex(self.data.get(k, None))
                     except ValidationError as e:
                         error_message = error_message_generate(k, rule, self.message, e)

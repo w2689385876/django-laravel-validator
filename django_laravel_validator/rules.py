@@ -14,6 +14,7 @@ from .exceptions import InvalidMaxValidatorParameterError
 from .exceptions import InvalidRangeValidatorParameterError
 from .exceptions import InvalidLengthValidatorParameterError
 from .exceptions import InvalidRegexValidatorParameterError
+from .exceptions import InvalidMatchValidatorParameterError
 from .messages import REQUIRED_MESSAGE
 from .messages import NUMERIC_MESSAGE
 from .messages import MIN_MESSAGE
@@ -31,7 +32,11 @@ from .messages import REGEX_MESSAGE
 WITH_PARAMETERS_VALIDATOR = ['MIN', 'MAX', 'RANGE', 'LENGTH', 'REGEX']
 
 
-class RequiredValidator(RegexValidator):
+class BaseValidator(RegexValidator):
+    pass
+
+
+class RequiredValidator(BaseValidator):
 
     def __init__(self, **kwargs):
         super(RequiredValidator, self).__init__(**kwargs)
@@ -46,7 +51,7 @@ class RequiredValidator(RegexValidator):
             raise ValidationError(message=self.message, code=self.code)
 
 
-class NumericValidator(RegexValidator):
+class NumericValidator(BaseValidator):
 
     def __init__(self, **kwargs):
         super(NumericValidator, self).__init__(**kwargs)
@@ -58,7 +63,7 @@ class NumericValidator(RegexValidator):
             raise ValidationError(message=self.message, code=self.code)
 
 
-class MinValidator(RegexValidator):
+class MinValidator(BaseValidator):
 
     def __init__(self, args=None, **kwargs):
         super(MinValidator, self).__init__(**kwargs)
@@ -82,7 +87,7 @@ class MinValidator(RegexValidator):
             raise ValidationError(message=self.message, code=self.code)
 
 
-class MaxValidator(RegexValidator):
+class MaxValidator(BaseValidator):
 
     def __init__(self, args=None, **kwargs):
         super(MaxValidator, self).__init__(**kwargs)
@@ -105,7 +110,7 @@ class MaxValidator(RegexValidator):
             raise ValidationError(message=self.message, code=self.code)
 
 
-class LengthValidator(RegexValidator):
+class LengthValidator(BaseValidator):
 
     def __init__(self, args=None, **kwargs):
         super(LengthValidator, self).__init__(**kwargs)
@@ -128,7 +133,7 @@ class LengthValidator(RegexValidator):
             raise ValidationError(message=self.message, code=self.code)
 
 
-class RangeValidator(RegexValidator):
+class RangeValidator(BaseValidator):
 
     def __init__(self, args=None, **kwargs):
         super(RangeValidator, self).__init__(**kwargs)
@@ -162,7 +167,7 @@ class RangeValidator(RegexValidator):
             raise ValidationError(message=self.message, code=self.code)
 
 
-class AcceptedValidator(RegexValidator):
+class AcceptedValidator(BaseValidator):
 
     def __init__(self, **kwargs):
         super(AcceptedValidator, self).__init__(**kwargs)
@@ -177,7 +182,7 @@ class AcceptedValidator(RegexValidator):
             raise ValidationError(message=self.message, code=self.code)
 
 
-class AlphaValidator(RegexValidator):
+class AlphaValidator(BaseValidator):
 
     def __init__(self, **kwargs):
         super(AlphaValidator, self).__init__(**kwargs)
@@ -191,7 +196,7 @@ class AlphaValidator(RegexValidator):
             raise ValidationError(message=self.message, code=self.code)
 
 
-class EmailValidator(RegexValidator):
+class EmailValidator(BaseValidator):
 
     def __init__(self, **kwargs):
         super(EmailValidator, self).__init__(**kwargs)
@@ -203,7 +208,7 @@ class EmailValidator(RegexValidator):
             raise ValidationError(message=self.message, code=self.code)
 
 
-class IPAddressValidator(RegexValidator):
+class IPAddressValidator(BaseValidator):
 
     def __init__(self, **kwargs):
         super(IPAddressValidator, self).__init__(**kwargs)
@@ -215,7 +220,7 @@ class IPAddressValidator(RegexValidator):
             raise ValidationError(message=self.message, code=self.code)
 
 
-class BooleanValidator(RegexValidator):
+class BooleanValidator(BaseValidator):
 
     def __init__(self, **kwargs):
         super(BooleanValidator, self).__init__(**kwargs)
@@ -229,7 +234,7 @@ class BooleanValidator(RegexValidator):
             raise ValidationError(message=self.message, code=self.code)
 
 
-class RegexValidator(RegexValidator):
+class RegexValidator(BaseValidator):
 
     def __init__(self, args, **kwargs):
         super(RegexValidator, self).__init__(**kwargs)
@@ -250,6 +255,18 @@ class RegexValidator(RegexValidator):
             raise ValidationError(message=self.message, code=self.code)
 
 
+class MatchValidator(BaseValidator):
+
+    def __init__(self, args, **kwargs):
+        super(MatchValidator, self).__init__(**kwargs)
+        self.code = 'match'
+
+        if not args or len(args) != 1:
+            raise InvalidMatchValidatorParameterError()
+
+        match_field = args[0]
+
+
 REQUIRED = RequiredValidator
 NUMERIC = NumericValidator
 MIN = MinValidator
@@ -262,3 +279,4 @@ EMAIL = EmailValidator
 IP = IPAddressValidator
 BOOL = BooleanValidator
 REGEX = RegexValidator
+MATCH = MatchValidator
