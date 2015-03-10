@@ -27,9 +27,9 @@ from .messages import EMAIL_MESSAGE
 from .messages import IP_ADDRESS_MESSAGE
 from .messages import BOOLEAN_MESSAGE
 from .messages import REGEX_MESSAGE
+from .messages import MATCH_MESSAGE
 
-
-WITH_PARAMETERS_VALIDATOR = ['MIN', 'MAX', 'RANGE', 'LENGTH', 'REGEX']
+WITH_PARAMETERS_VALIDATOR = ['MIN', 'MAX', 'RANGE', 'LENGTH', 'REGEX', 'MATCH']
 
 
 class BaseValidator(RegexValidator):
@@ -264,8 +264,22 @@ class MatchValidator(BaseValidator):
         if not args or len(args) != 1:
             raise InvalidMatchValidatorParameterError()
 
-        match_field = args[0]
+        self.match = args[0]
+        self.message = MATCH_MESSAGE.format(match=self.match)
 
+    def __call__(self, value=None):
+        instance = getattr(self, 'validator_instance')
+        data = getattr(instance, 'data', None)
+        match_value = data.get(self.match, None)
+
+        print value
+        print match_value
+
+        if not match_value:
+            raise InvalidMatchValidatorParameterError()
+        else:
+            if not value == match_value:
+                raise ValidationError(message=self.message, code=self.code)
 
 REQUIRED = RequiredValidator
 NUMERIC = NumericValidator

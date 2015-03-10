@@ -14,4 +14,5 @@ ALPHA_MESSAGE = u'The field under validation must be entirely alphabetic charact
 EMAIL_MESSAGE = u'The field under validation must be formatted as an e-mail address.'
 IP_ADDRESS_MESSAGE = u'The field under validation must be formatted as an IP address.'
 BOOLEAN_MESSAGE = u'The field under validation must be able to be cast as a boolean. Accepted input are true, false, 1, 0, "1" and "0".'
-REGEX_MESSAGE = u'The field under validation must match the given regular expression : {regex} '
+REGEX_MESSAGE = u'The field under validation must match the given regular expression : {regex} .'
+MATCH_MESSAGE = u'the field must match : {match}. '

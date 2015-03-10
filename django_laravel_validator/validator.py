@@ -5,7 +5,8 @@
 import copy
 from importlib import import_module
 from django.core.exceptions import ValidationError
-from .exceptions import InvalidValidateDataError, InvalidRuleNameError
+from .exceptions import InvalidRuleNameError
+from .exceptions import InvalidValidateDataError
 from .utils import format_args_split, check_errors, error_message_generate
 from .rules import WITH_PARAMETERS_VALIDATOR
 
@@ -44,6 +45,9 @@ class Validator(object):
     __metaclass__ = BaseValidator
 
     def __init__(self, data, message=None):
+        if not data:
+            raise InvalidValidateDataError()
+
         self.data = data
         self.message = message
         self.validate_flag = True

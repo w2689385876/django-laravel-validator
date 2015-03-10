@@ -59,6 +59,18 @@ class TestValidator6(Validator):
     phone = 'required|regex:^[0-9]{5,10}$'
 
 
+class MatchValidatorTestValidator(Validator):
+    password = 'required'
+    password_confirm = 'required|match:password'
+
+
+def test_match_validator():
+    data = dict(password='123', password_confirm='123')
+    validator = MatchValidatorTestValidator(data)
+    ret = validator.fails()
+    assert ret
+
+
 def test_validator():
     data = dict(username='youngershen', password='123456')
     validator = TestValidator1(data)
