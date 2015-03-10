@@ -25,7 +25,7 @@ if you checkout from github or download the tarball
 
 Usage:
 
-you do not need to install the app to django's setting file.
+you do not need to install the app to django's setting file. inface it is not a really django package, it is just a python package.
 
     class RegistValidator(Validator):
         email = 'required|email'
@@ -88,3 +88,10 @@ ______________________
 __4. contribute__
 
 just make pull request or fork to your repos, and if you like, buy me a beer or a launch.
+
+
+__5. TODO__
+
+1. i18n support for display error messages
+2. python3 compatible
+3. more userful validators support inside the package (long term)
