@@ -272,9 +272,6 @@ class MatchValidator(BaseValidator):
         data = getattr(instance, 'data', None)
         match_value = data.get(self.match, None)
 
-        print value
-        print match_value
-
         if not match_value:
             raise InvalidMatchValidatorParameterError()
         else:
