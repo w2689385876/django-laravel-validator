@@ -57,6 +57,9 @@ class Validator(object):
     def add_error(self, error):
         self.error_list_ext.update(error)
 
+    def get(self, item):
+        return self.data.get(item, None)
+
     def fails(self):
         validate_data = getattr(self, 'validate_data')
         for k in validate_data:
