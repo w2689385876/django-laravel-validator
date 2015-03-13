@@ -78,6 +78,7 @@ Rules:
     BOOL # confirm = 'bool' , should be 'True', 'False', '0', '1'
     REGEX # complicated = 'regex:^[0-9A-Z]{10,20}$' , for validate a regex
     MATCH # password_confirm = 'required|match:password', match a exists field
+    UNIQUE # email = 'required|unique:account.User,email' # parameter just the app and the model inside the app, then the model field.
 
 And others:
 
