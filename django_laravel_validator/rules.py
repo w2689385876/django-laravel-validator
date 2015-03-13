@@ -2,8 +2,9 @@
 # PROJECT_NAME : laravel_validator
 # FILE_NAME    : 
 # AUTHOR       : younger shen
+from importlib import import_module
 import re
-from django.core.exceptions import ValidationError
+from django.core.exceptions import ValidationError, FieldError
 from django.core.validators import RegexValidator
 from .regex import RE_NUMBERIC
 from .regex import RE_ALPHA
@@ -15,6 +16,7 @@ from .exceptions import InvalidRangeValidatorParameterError
 from .exceptions import InvalidLengthValidatorParameterError
 from .exceptions import InvalidRegexValidatorParameterError
 from .exceptions import InvalidMatchValidatorParameterError
+from .exceptions import InvalidUniqueValidatorParameterError
 from .messages import REQUIRED_MESSAGE
 from .messages import NUMERIC_MESSAGE
 from .messages import MIN_MESSAGE
@@ -28,8 +30,11 @@ from .messages import IP_ADDRESS_MESSAGE
 from .messages import BOOLEAN_MESSAGE
 from .messages import REGEX_MESSAGE
 from .messages import MATCH_MESSAGE
-
-WITH_PARAMETERS_VALIDATOR = ['MIN', 'MAX', 'RANGE', 'LENGTH', 'REGEX', 'MATCH']
+from .messages import UNIQUE_MESSAGE
+from .messages import UNIQUE_UNKNOW_APP_NAME
+from .messages import UNIQUE_UNKNOW_MODEL_NAME
+from .messages import UNIQUE_UNKNOW_MODEL_FIELD
+WITH_PARAMETERS_VALIDATOR = ['MIN', 'MAX', 'RANGE', 'LENGTH', 'REGEX', 'MATCH', 'UNIQUE']
 
 
 class BaseValidator(RegexValidator):
@@ -278,6 +283,48 @@ class MatchValidator(BaseValidator):
             if not value == match_value:
                 raise ValidationError(message=self.message, code=self.code)
 
+
+class UniqueValidator(BaseValidator):
+
+    def __init__(self, args, **kwargs):
+        # email = 'unique:account.user,email'
+        super(UniqueValidator, self).__init__(**kwargs)
+        self.code = 'unique'
+        if not args or len(args) != 2:
+            raise InvalidUniqueValidatorParameterError()
+
+        if args[0] == '' or args[1] == '':
+            raise InvalidUniqueValidatorParameterError()
+
+        temp = args[0].split('.')
+        temp.insert(1, 'models')
+        module_name = '.'.join(temp[:2])
+        try:
+            module = import_module(module_name)
+        except ImportError:
+            message = UNIQUE_UNKNOW_APP_NAME.format(appname=temp[0])
+            raise InvalidUniqueValidatorParameterError(message)
+
+        klass = getattr(module, temp[2], None)
+        if not klass:
+            message = UNIQUE_UNKNOW_MODEL_NAME.format(appname=temp[0], modelname=temp[2])
+            raise InvalidUniqueValidatorParameterError(message)
+        self.klass = klass
+        self.field = args[1]
+        self.message = UNIQUE_MESSAGE.format(field=self.field, model=temp[2])
+
+    def __call__(self, value=None):
+        try:
+            self.klass.objects.get(**{self.field: value})
+        except FieldError:
+            message = UNIQUE_UNKNOW_MODEL_FIELD.format(fieldname=self.field)
+            raise InvalidUniqueValidatorParameterError(message=message)
+        except self.klass.DoesNotExist:
+            return
+
+        raise ValidationError(code=self.code, message=self.message)
+
+
 REQUIRED = RequiredValidator
 NUMERIC = NumericValidator
 MIN = MinValidator
@@ -291,3 +338,4 @@ IP = IPAddressValidator
 BOOL = BooleanValidator
 REGEX = RegexValidator
 MATCH = MatchValidator
+UNIQUE = UniqueValidator

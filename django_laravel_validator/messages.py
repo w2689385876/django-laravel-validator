@@ -16,3 +16,9 @@ IP_ADDRESS_MESSAGE = u'The field under validation must be formatted as an IP add
 BOOLEAN_MESSAGE = u'The field under validation must be able to be cast as a boolean. Accepted input are true, false, 1, 0, "1" and "0".'
 REGEX_MESSAGE = u'The field under validation must match the given regular expression : {regex} .'
 MATCH_MESSAGE = u'the field must match : {match}. '
+UNIQUE_MESSAGE = u'the {field} field must be unique of table {model}.'
+# error messages
+
+UNIQUE_UNKNOW_APP_NAME = u'unknow app name : {appname}'
+UNIQUE_UNKNOW_MODEL_NAME = u'unknow model name : {appname}.models.{modelname}'
+UNIQUE_UNKNOW_MODEL_FIELD = u'unknow model field name : {fieldname}'

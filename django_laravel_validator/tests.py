@@ -28,7 +28,6 @@ class TestValidator2(Validator):
     username = 'required|min:8|numeric'
     password = 'required|min:8|numeric'
 
-
     def check(self):
         print ' i am checking '
 
@@ -62,6 +61,10 @@ class TestValidator6(Validator):
 class MatchValidatorTestValidator(Validator):
     password = 'required'
     password_confirm = 'required|match:password'
+
+
+class UniqueValidatorTestValidator(Validator):
+    email = 'required|unique:account.User,email'
 
 
 def test_match_validator():
@@ -166,3 +169,10 @@ def test_validator6():
     assert not error_list.get('email')
     assert not error_list.get('ip')
     assert not error_list.get('is_superuser')
+
+
+def test_validator7():
+    data = dict(username='youngershen', email='root@root.com')
+    validator = UniqueValidatorTestValidator(data)
+    ret = validator.fails()
+    assert ret is True

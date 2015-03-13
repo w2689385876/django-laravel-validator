@@ -7,6 +7,7 @@
 def format_args_split(format_str):
     if ':' in format_str:
         args = format_str.split(':')[1].split(',')
+        args = map(lambda a: a.strip(), args)
         return args
     else:
         return None
