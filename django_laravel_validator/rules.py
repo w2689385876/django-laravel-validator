@@ -287,7 +287,6 @@ class MatchValidator(BaseValidator):
 class UniqueValidator(BaseValidator):
 
     def __init__(self, args, **kwargs):
-        # email = 'unique:account.user,email'
         super(UniqueValidator, self).__init__(**kwargs)
         self.code = 'unique'
         if not args or len(args) != 2:
@@ -321,8 +320,8 @@ class UniqueValidator(BaseValidator):
             raise InvalidUniqueValidatorParameterError(message=message)
         except self.klass.DoesNotExist:
             return
-
-        raise ValidationError(code=self.code, message=self.message)
+        else:
+            raise ValidationError(code=self.code, message=self.message)
 
 
 REQUIRED = RequiredValidator
